@@ -88,7 +88,7 @@ void Main() {
 
 		plotter2
 			.resize(plotterArea)
-			.set(Time::GetMicrosec())
+			.set(Periodic::Sine0_1(7s) + Random() / 10)
 			.draw(Palette::Red);
 	}
 }
