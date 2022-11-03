@@ -14,7 +14,7 @@
 
 ## APIs
 
-- `Plotter(int resolution, RectF&& parent)`
+- `Plotter(RectF&& parent, int resolution)`
 
   Generate plotter object
   
@@ -22,23 +22,29 @@
   
   `@param parent` Rectangle to be drawn (defalt null)
 
-- `Plotter& resize(RectF& r)`
+- `resize(RectF& r)`
 
   Graph resize
-  
-  `@param r` Rectangle to be drawn
 
-- `Plotter& set(double r)`
+- `resize(Plotter& r)`
+
+  Graph resize
+
+- `plot(double r)`
 
   Add data to be plotted
-  
-  `@param r` data
 
-- `Plotter& draw(const ColorF& color = Palette::White)`
+- `draw(ColorF& color)`
 
   Plotting graphs
   
-  `@param color` Graph color
+- `drawGrid(int horizontal, int vertical, ColorF& color)`
+
+  Drawing a grid of graphs
+  
+- `getPlotArea()`
+
+  Gets the area where the graph will be drawn.
 
 ## sample
 
