@@ -60,7 +60,7 @@ public:
 
 			/// 点の高さを求める
 			const auto dataToPointHeight = [&](double data) ->double {
-				const double ratio = plotArea.h / (max - min) * 0.9;  /// オートスケーリング用比率
+				const double ratio = plotArea.h / (max - min ? max - min : 1) * 0.9;  /// オートスケーリング用比率
 				return plotArea.right().end.y - (data - min) * ratio;
 			};
 
