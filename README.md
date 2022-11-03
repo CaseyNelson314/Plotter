@@ -2,7 +2,7 @@
 
 ## OpenSiv3D Simple Graph Plotter
 
-![image](https://user-images.githubusercontent.com/91818705/199291825-11d5247d-8d80-47d7-93c8-9bb55a530bb8.png)
+![image](https://user-images.githubusercontent.com/91818705/199765950-85d84e68-c955-4ca1-b958-7ccaeaea2dfd.png)
 
 ## What you can
 
@@ -49,21 +49,16 @@
 void Main() {
 	Window::SetStyle(WindowStyle::Sizable);
 
-	Plotter plotter1;
-	Plotter plotter2;
+	Plotter plotter;
 
 	while (System::Update()) {
-		const auto plotterArea = RectF{ Arg::center(Scene::Center()), Scene::Size() - Vec2{100, 100} };
-
-		plotter1
+		const auto plotterArea
+			= RectF{ Arg::center = Scene::Center(), Scene::Size() - Vec2{100, 100} };
+		plotter
 			.resize(plotterArea)
-			.set(Periodic::Sine0_1(5s) - 0.5)
+			.plot(Periodic::Sawtooth0_1(5s))
+			.drawGrid(5, 4, Palette::Gray)
 			.draw(Palette::Blue);
-
-		plotter2
-			.resize(plotterArea)
-			.set(Periodic::Sine0_1(7s) + Random() / 10)
-			.draw(Palette::Red);
 	}
 }
 
