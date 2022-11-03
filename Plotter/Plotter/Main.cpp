@@ -13,12 +13,12 @@ void Main() {
 
 		plotter1
 			.resize(plotterArea)
-			.put(Periodic::Sine0_1(5s) * 100)
+			.put(Periodic::Sine0_1(5s) + Random() / 10)
 			.draw(Palette::Blue);
 
 		plotter2
 			.resize(plotterArea)
-			.put(Periodic::Sine0_1(1s))
+			.put(Periodic::Sine0_1(10s) + Random() / 10)
 			.draw(Palette::Red);
 	}
 }
