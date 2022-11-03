@@ -6,7 +6,8 @@ class Plotter {
 	RectF             parent    ;  /// 描画エリア
 	const Font        font      ;  /// ラベル用フォント
 	const int         resolution;  /// 分解能
-	const Font        font;        /// ラベル用フォント
+
+	static constexpr std::array<double, 4> graphPadding = { 20, 30, 20, 30 };  ///グラフ表示域と親要素との間隔 [上,右,下,左]
 
 public:
 
@@ -47,8 +48,6 @@ public:
 
 		const auto plotArea = getPlotArea();
 
-		constexpr int padding = 6;
-
 		if (plotArea.h >= 0 && plotArea.w >= 0) {
 
 			/// 最小最大値取得
@@ -85,10 +84,10 @@ public:
 
 				Line{ begin, end }.draw(2, color);
 			}
-			}
+		}
 
 		return *this;
-		}
+	}
 
 	/// @brief グリッド描画
 	/// @param horizontal 横方向の分割個数
