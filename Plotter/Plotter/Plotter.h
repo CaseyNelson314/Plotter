@@ -13,7 +13,10 @@ public:
 	/// @brief プロッタ作成
 	/// @param parent グラフを描画するエリア
 	/// @param resolution 分解能
-		, parent(std::move(parent))
+	Plotter(RectF&& parent = {}, const int resolution = 500) noexcept
+		: points{                   }
+		, parent{ std::move(parent) }
+		, font  { 15                }
 		, resolution(resolution ? resolution : 1)
 	{}
 
@@ -23,9 +26,14 @@ public:
 		parent = r;
 		return *this;
 	}
+	Plotter& resize(const Plotter& r) {
+		parent = r.parent;
+		return *this;
+	}
 
 	/// @brief プロットするデータをセット
 	/// @param r プロットするデータ
+	Plotter& plot(double r) {
 		points.push_front(r);
 		if (points.size() > resolution) {
 			points.pop_back();
@@ -37,7 +45,7 @@ public:
 	/// @param color グラフの色
 	Plotter& draw(const ColorF& color = Palette::White) {
 
-		const RectF plotArea = padding(10, 10, 30, 100);
+		const auto plotArea = getPlotArea();
 
 		constexpr int padding = 6;
 
@@ -53,17 +61,12 @@ public:
 
 			/// 点の高さを求める
 			const auto dataToPointHeight = [&](double data) ->double {
-				const double ratio = plotArea.h / (max - min) * (padding - 0.5) / padding/*margin top*/;  /// オートスケーリング用比率
+				const double ratio = plotArea.h / (max - min) * 0.9;  /// オートスケーリング用比率
 				return plotArea.right().end.y - (data - min) * ratio;
 			};
 
 			/// 点間の距離
-			for (auto i : step(padding + 1)) {
-				plotArea.top().movedBy(0, plotArea.h / padding * i).draw(Palette::Gray);
-			}
-			for (auto i : step(padding + 1)) {
-				plotArea.left().movedBy(plotArea.w / padding * i, 0).draw(Palette::Gray);
-			}
+			const double plotInterval = plotArea.w / (resolution - 1);
 
 			/// 線分開始位置
 			Vec2 holdPoint = {
@@ -84,18 +87,42 @@ public:
 			}
 			}
 
-			plotArea.drawFrame(2, Palette::White);
+		return *this;
 		}
 
 	/// @brief グリッド描画
 	/// @param horizontal 横方向の分割個数
 	/// @param vertical   縦方向の分割個数
+	Plotter& drawGrid(int horizontal = 7, int vertical = 5, const ColorF& color = Palette::Gray) {
+		const auto plotArea = getPlotArea();
+
+		if (plotArea.h >= 0 && plotArea.w >= 0) {
+
+			/// 横分割
+			for (auto i : step(horizontal + 1)) {
+				const double width = plotArea.w / horizontal * i;
+
+				plotArea.left().moveBy(width, 0).draw(color);
+
+				/// タイムスタンプ
+				font(static_cast<int64>(Time::GetMillisec() - (1.0 / Profiler::FPS()) * resolution * i * 1000 / horizontal))
+					.drawAt(plotArea.bottom().begin.x - width, plotArea.bottom().begin.y + 10, color);
+			}
+			/// 縦分割
+			for (auto i : step(vertical + 1)) {
+				plotArea.top().moveBy(0, plotArea.h * i / vertical).draw(color);
+			}
+		}
 		return *this;
 	}
 
 	/// @brief グラフの表示域取得
+	RectF getPlotArea() const {
+		return padding(graphPadding[0], graphPadding[1], graphPadding[2], graphPadding[3]);
+	}
+
 private:
-	RectF padding(double top, double right, double bottom, double left) {
+	RectF padding(double top, double right, double bottom, double left) const {
 		return {
 			parent.x + left,
 			parent.y + top,
