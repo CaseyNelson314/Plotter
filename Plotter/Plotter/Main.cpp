@@ -8,16 +8,17 @@ void Main() {
 	Plotter plotter2;
 
 	while (System::Update()) {
-		const auto plotterArea = RectF{ Arg::center(Scene::Center()), Scene::Size() - Vec2{100, 100} };
+		const auto plotterArea
+			= RectF{ Arg::center = Scene::Center(), Scene::Size() - Vec2{100, 100} };
 
 		plotter1
 			.resize(plotterArea)
-			.set(Periodic::Sine0_1(5s) - 0.5)
+			.put(Periodic::Sine0_1(5s) * 100)
 			.draw(Palette::Blue);
 
 		plotter2
 			.resize(plotterArea)
-			.set(Periodic::Sine0_1(7s) + Random() / 10)
+			.put(Periodic::Sine0_1(1s))
 			.draw(Palette::Red);
 	}
 }
