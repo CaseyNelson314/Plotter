@@ -2,8 +2,9 @@
 
 class Plotter {
 
-	std::list<double> points;
-	RectF             parent;      /// グラフを描画する四角形
+	std::list<double> points    ;
+	RectF             parent    ;  /// 描画エリア
+	const Font        font      ;  /// ラベル用フォント
 	const int         resolution;  /// 分解能
 	const Font        font;        /// ラベル用フォント
 
@@ -71,8 +72,7 @@ public:
 			};
 
 			/// 全ての隣り合う点を線分で結ぶ
-
-			for (auto it = points.begin()++; it != points.end(); ++it) {
+			for (auto it = (++points.begin()); it != points.end(); ++it) {
 				const Vec2 begin = holdPoint;
 
 				holdPoint.x -= plotInterval;
@@ -80,7 +80,8 @@ public:
 
 				const Vec2 end = holdPoint;
 
-				Line{ begin, end }.draw(2, color);  /// 前回の点とを線分で結ぶ
+				Line{ begin, end }.draw(2, color);
+			}
 			}
 
 			plotArea.drawFrame(2, Palette::White);
