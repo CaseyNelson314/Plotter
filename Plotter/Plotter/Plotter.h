@@ -54,7 +54,7 @@ public:
 			double max = std::numeric_limits<double>::min();
 			double min = std::numeric_limits<double>::max();
 			for (const auto& it : points) {
-				max = std::max(abs(it), max);
+				max = std::max(it, max);
 				min = std::min(it, min);
 			}
 
