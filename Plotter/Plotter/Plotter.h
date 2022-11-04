@@ -3,9 +3,12 @@
 class Plotter {
 
 	std::list<double> points;
-	RectF             parent;  /// 描画エリア
-	const Font        font;  /// ラベル用フォント
-	const int         resolution;  /// 分解能
+	RectF parent;          /// 描画エリア
+	const Font font;       /// ラベル用フォント
+	const int resolution;  /// 分解能
+
+	double min;
+	double max;
 
 	static constexpr std::array<double, 4> graphPadding = { 20, 30, 20, 30 };  ///グラフ表示域と親要素との間隔 [上,右,下,左]
 
@@ -19,6 +22,8 @@ public:
 		, parent{ std::move(parent) }
 		, font{ 15 }
 		, resolution(resolution > 0 ? resolution : 1)
+		, min(std::numeric_limits<double>::max())
+		, max(std::numeric_limits<double>::min())
 	{}
 
 	/// @brief サイズ更新
@@ -36,31 +41,46 @@ public:
 	/// @param r プロットするデータ
 	Plotter& plot(double r) {
 		points.push_front(r);
+
+		max = std::max(max, r);
+		min = std::min(min, r);
+
+		/// 設定分解能を超えたデータを破棄
 		if (points.size() > resolution) {
+			const auto temp = points.back();
 			points.pop_back();
+			/// 最小最大値再取得
+			if (temp == max) {
+				for (const auto& it : points) {
+					max = std::max(it, max);
+				}
+			}
+			if (temp == min) {
+				for (const auto& it : points) {
+					min = std::min(it, min);
+				}
+			}
 		}
+		return *this;
+	}
+
+	Plotter& minimum(double value) {
+		min = value;
+		return *this;
+	}
+	Plotter& maximum(double value) {
+		max = value;
 		return *this;
 	}
 
 	/// @brief グラフ描画
 	/// @param color グラフの色
 	Plotter& draw(const ColorF& color = Palette::White) {
-		draw(std::numeric_limits<double>::max(), std::numeric_limits<double>::min(), color);
-		return *this;
-	}
-	Plotter& draw(double min, double max, const ColorF& color = Palette::White) {
 
 		const auto plotArea = getPlotArea();
 
 		if (plotArea.h >= 0 && plotArea.w >= 0) {
 
-			/// 最小最大値取得
-			//double max = std::numeric_limits<double>::min();
-			//double min = std::numeric_limits<double>::max();
-			for (const auto& it : points) {
-				max = std::max(it, max);
-				min = std::min(it, min);
-			}
 
 			/// 点の高さを求める
 			const auto dataToPointHeight = [&](double data) ->double {

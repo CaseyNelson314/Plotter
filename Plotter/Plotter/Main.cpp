@@ -19,7 +19,7 @@ void Main() {
 
 		plotter2
 			.resize(plotter1)
-			.plot(Periodic::Sine0_1(10s))
-			.draw(0, 1, Palette::Red);
+			.plot(Periodic::Sine0_1(20s))
+			.draw(Palette::Red);
 	}
 }
