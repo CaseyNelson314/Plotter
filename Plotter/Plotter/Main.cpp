@@ -14,12 +14,12 @@ void Main() {
 		plotter1
 			.resize(plotterArea)
 			.plot(Periodic::Sawtooth0_1(5s))
-			.drawGrid(5, 4, Palette::Gray)
+			.drawGrid(5, 10, Palette::Gray)
 			.draw(Palette::Blue);
 
 		plotter2
 			.resize(plotter1)
-			.plot(Periodic::Sine0_1(2s))
-			.draw(Palette::Red);
+			.plot(Periodic::Sine0_1(10s))
+			.draw(0, 1, Palette::Red);
 	}
 }
