@@ -18,7 +18,7 @@ public:
 		: points{                   }
 		, parent{ std::move(parent) }
 		, font  { 15                }
-		, resolution(resolution ? resolution : 1)
+		, resolution(resolution > 0 ? resolution : 1)
 	{}
 
 	/// @brief サイズ更新
